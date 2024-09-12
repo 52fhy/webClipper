@@ -30,9 +30,9 @@ ApplicationContextInitializer
 
 1.  在应用启动时进行环境配置：可以使用 `ApplicationContextInitializer` 来在应用上下文初始化时进行一些环境相关的配置，例如设置系统属性、加载外部配置文件等。
 
-java
 
-```
+
+``` java
 public class EnvironmentInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext\> {
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
@@ -45,9 +45,9 @@ public class EnvironmentInitializer implements ApplicationContextInitializer<Con
 
 2.  注册自定义的 `BeanFactoryPostProcessor` 或者 `BeanPostProcessor`：`ApplicationContextInitializer` 可以用来注册自定义的 `BeanFactoryPostProcessor` 或者 `BeanPostProcessor`，以便在 Bean 初始化之前或之后进行某些自定义处理。
 
-java
 
-```
+
+``` java
 public class CustomBeanFactoryPostProcessorInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext\> {
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
@@ -61,9 +61,9 @@ public class CustomBeanFactoryPostProcessorInitializer implements ApplicationCon
 
 3.  动态地添加 `PropertySource`：可以在初始化过程中动态地添加 `PropertySource`，以便后续的 Bean 定义和初始化过程中可以使用这些属性。
 
-java
 
-```
+
+``` java
 public class PropertySourceInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext\> {
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
@@ -80,9 +80,9 @@ public class PropertySourceInitializer implements ApplicationContextInitializer<
 
 1.  手动调用的setXXX方法添加
 
-java
 
-```
+
+``` java
 ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext();
 context.addApplicationListener(new TestApplicationContextInitializer());
 context.setConfigLocation("classpath:applicationContext.xml");
@@ -113,9 +113,9 @@ xml
 
 示例，展示了如何实现一个ApplicationContextInitializer来添加一个自定义的属性源：
 
-java
 
-```
+
+``` java
 public class TestApplicationContextInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext\> {
     @Override
     public void initialize(ConfigurableApplicationContext applicationContext) {
@@ -136,9 +136,9 @@ public class TestApplicationContextInitializer implements ApplicationContextInit
 
 1.  在启动类中用`springApplication.addInitializers(new TestApplicationContextInitializer())`语句加入
 
-java
 
-```
+
+``` java
 @SpringBootApplication
 public class MySpringExApplication {
     public static void main(String\[\] args) {
@@ -204,9 +204,9 @@ BeanFactoryPostProcessor
 
 1.  修改 Bean 属性：可以动态地改变某些配置属性或者注入额外的依赖。
 
-java
 
-```
+
+``` java
 public class PropertyModifierBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
@@ -219,9 +219,9 @@ public class PropertyModifierBeanFactoryPostProcessor implements BeanFactoryPost
 
 2.  动态注册 Bean：可以根据配置文件或者系统环境变量来决定是否注册某个 Bean。
 
-java
 
-```
+
+``` java
 public class ConditionalBeanRegistrar implements BeanFactoryPostProcessor {
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
@@ -239,9 +239,9 @@ public class ConditionalBeanRegistrar implements BeanFactoryPostProcessor {
 
 3.  修改 Bean 定义：可以修改 Bean 的作用域、初始化和销毁方法等定义信息。
 
-java
 
-```
+
+``` java
 public class ScopeModifierBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
@@ -253,9 +253,9 @@ public class ScopeModifierBeanFactoryPostProcessor implements BeanFactoryPostPro
 
 4.  属性占位符替换：可以使用 `PropertyPlaceholderConfigurer` 实现 `BeanFactoryPostProcessor` 接口，来替换 Bean 定义中的属性占位符。
 
-java
 
-```
+
+``` java
 public class CustomPropertyPlaceholderConfigurer extends PropertyPlaceholderConfigurer {
     @Override
     protected void processProperties(ConfigurableListableBeanFactory beanFactory, Properties props)
@@ -292,9 +292,9 @@ BeanDefinitionRegistryPostProcessor用于在bean解析后实例化之前通过Be
 
 1.  修改现有的 BeanDefinition：可以在 Bean 实例化之前修改现有的 `BeanDefinition`，如更改其属性值或作用域。
 
-java
 
-```
+
+``` java
 public class BeanDefinitionModifier implements BeanDefinitionRegistryPostProcessor {
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
@@ -314,9 +314,9 @@ public class BeanDefinitionModifier implements BeanDefinitionRegistryPostProcess
 
 2.  条件性地注册 Bean：基于某些条件（如环境变量、配置文件等）动态注册或取消注册某些 Bean。
 
-java
 
-```
+
+``` java
 public class ConditionalBeanRegistrar implements BeanDefinitionRegistryPostProcessor {
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
@@ -341,9 +341,9 @@ public class ConditionalBeanRegistrar implements BeanDefinitionRegistryPostProce
 
 3.  扫描和注册自定义注解的 Bean：实现自定义注解的扫描逻辑，并动态注册这些注解标注的 Bean。
 
-java
 
-```
+
+``` java
 public class CustomAnnotationBeanRegistrar implements BeanDefinitionRegistryPostProcessor {
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
@@ -363,9 +363,9 @@ public class CustomAnnotationBeanRegistrar implements BeanDefinitionRegistryPost
 
 4.  比如依赖Redis.jar，如果该依赖jar存在，则用[redis当缓存](https://www.seven97.top/system-design/cache-column/redis.html)，否则就用[本地缓存](https://www.seven97.top/system-design/cache-column/localcache1.html)。这个需求完全可以在postProcessBeanDefinitionRegistry中利用Class.forName判断依赖，存在的话则注册对应class到容器。
 
-java
 
-```
+
+``` java
 @Configuration
 public class AppConfig {
     @Bean
@@ -405,9 +405,9 @@ public class AppConfig {
 
 以下是 `MapperScannerConfigurer` 的核心代码片段：
 
-java
 
-```
+
+``` java
 
 public class MapperScannerConfigurer implements BeanDefinitionRegistryPostProcessor, ApplicationContextAware {
     private String basePackage;
@@ -451,9 +451,9 @@ BeanPostProcessor
 
 1.  初始化前后进行自定义逻辑：在 Bean 初始化之前或之后执行一些自定义的操作，例如设置一些属性、进行依赖注入、执行某些检查等。
 
-java
 
-```
+
+``` java
 @Component
 public class CustomBeanPostProcessor implements BeanPostProcessor {
     @Override
@@ -492,9 +492,9 @@ public class MyBean {
 
 2.  代理对象的生成：在 `postProcessAfterInitialization` 方法中生成 Bean 的代理对象，用于 AOP（面向切面编程）或其他用途。
 
-java
 
-```
+
+``` java
 @Component
 public class ProxyBeanPostProcessor implements BeanPostProcessor {
     @Override
@@ -520,9 +520,9 @@ public class ProxyBeanPostProcessor implements BeanPostProcessor {
 
 3.  日志记录和监控：记录 Bean 的初始化过程，进行性能监控、日志记录等。
 
-java
 
-```
+
+``` java
 @Component
 public class LoggingBeanPostProcessor implements BeanPostProcessor {
     @Override
@@ -541,9 +541,9 @@ public class LoggingBeanPostProcessor implements BeanPostProcessor {
 
 4.  自动装配和注入：在初始化前后进行自动装配和注入，例如通过反射为某些字段注入值。
 
-java
 
-```
+
+``` java
 @Component
 public class AutowireBeanPostProcessor implements BeanPostProcessor {
     @Override
@@ -610,9 +610,9 @@ InstantiationAwareBeanPostProcessor
 
 1.  在实例化之前替换 Bean：替换默认的 Bean 实例化过程，可能是返回一个代理对象。
 
-java
 
-```
+
+``` java
 @Component
 public class CustomInstantiationAwareBeanPostProcessor implements InstantiationAwareBeanPostProcessor {
     @Override
@@ -643,9 +643,9 @@ public class CustomInstantiationAwareBeanPostProcessor implements InstantiationA
 
 2.  控制实例化后的依赖注入过程：在实例化后但在依赖注入之前进行一些自定义逻辑。
 
-java
 
-```
+
+``` java
 @Component
 public class DependencyInjectionControlPostProcessor implements InstantiationAwareBeanPostProcessor {
     @Override
@@ -666,9 +666,9 @@ public class DependencyInjectionControlPostProcessor implements InstantiationAwa
 
 3.  修改属性值：在属性值设置过程中进行干预，修改或添加属性值。
 
-java
 
-```
+
+``` java
 @Component
 public class PropertyModificationPostProcessor implements InstantiationAwareBeanPostProcessor {
     @Override
@@ -708,9 +708,9 @@ SmartInstantiationAwareBeanPostProcessor
 
 1.  自定义构造函数选择：在实例化 Bean 时，选择特定的构造函数。
 
-java
 
-```
+
+``` java
 @Component
 public class CustomConstructorSelectionPostProcessor implements SmartInstantiationAwareBeanPostProcessor {
     @Override
@@ -743,9 +743,9 @@ public class MyBean {
 
 2.  解决循环依赖问题：通过提供早期 Bean 引用，解决循环依赖问题。
 
-java
 
-```
+
+``` java
 @Component
 public class EarlyBeanReferencePostProcessor implements SmartInstantiationAwareBeanPostProcessor {
     @Override
@@ -770,9 +770,9 @@ public class EarlyBeanReferencePostProcessor implements SmartInstantiationAwareB
 
 3.  预测 Bean 类型：在 Bean 实例化之前，预测 Bean 的类型。
 
-java
 
-```
+
+``` java
 @Component
 public class BeanTypePredictionPostProcessor implements SmartInstantiationAwareBeanPostProcessor {
     @Override
@@ -812,9 +812,9 @@ MergedBeanDefinitionPostProcessor 继承自 BeanPostProcessor。调用的时机�
 
 1.  对合并后的 Bean 定义信息进行修改：在 Bean 实例化之前，修改其定义信息，例如添加属性值或修改构造函数参数。
 
-java
 
-```
+
+``` java
 @Component
 public class CustomMergedBeanDefinitionPostProcessor implements MergedBeanDefinitionPostProcessor, BeanPostProcessor {
     @Override
@@ -846,9 +846,9 @@ public class MyBean {
 
 2.  实现通用的自定义逻辑：在所有 Bean 实例化之前，执行一些通用的自定义逻辑。
 
-java
 
-```
+
+``` java
 @Component
 public class CommonLogicMergedBeanDefinitionPostProcessor implements MergedBeanDefinitionPostProcessor, BeanPostProcessor {
     @Override
@@ -881,9 +881,9 @@ public class MyBean {
 
 3.  条件性地重置 Bean 定义信息：在某些条件下重置 Bean 的定义信息，使得下一次的实例化可以使用更新后的定义信息。
 
-java
 
-```
+
+``` java
 @Component
 public class ConditionalResetMergedBeanDefinitionPostProcessor implements MergedBeanDefinitionPostProcessor, BeanPostProcessor {
     @Override
@@ -927,9 +927,9 @@ BeanNameAware
 
 1.  记录或日志输出 Bean 名称：在某些应用场景中，开发者可能希望在 Bean 初始化时记录或输出 Bean 的名称。这对调试和日志记录非常有帮助。
 
-java
 
-```
+
+``` java
 @Component
 public class LoggingBean implements BeanNameAware {
     private String beanName;
@@ -955,9 +955,9 @@ public class AppConfig {
 
 2.  根据 Bean 名称实现条件性逻辑：有时，一个 Bean 可能需要根据其名称决定执行不同的逻辑。例如，可以在初始化过程或某些方法调用中根据 Bean 名称执行特定操作。
 
-java
 
-```
+
+``` java
 @Component
 public class ConditionalLogicBean implements BeanNameAware {
     private String beanName;
@@ -987,9 +987,9 @@ public class AppConfig {
 
 3.  动态注册多个同类型的 Bean：在某些复杂的应用场景中，可能需要动态注册多个同类型的 Bean，并且需要根据名称区分它们。实现 `BeanNameAware` 接口可以很方便地获取和使用这些 Bean 的名称。
 
-java
 
-```
+
+``` java
 @Component("beanA")
 public class DynamicBeanA implements BeanNameAware {
     private String beanName;
@@ -1042,9 +1042,9 @@ BeanClassLoaderAware
 
 1.  动态加载类：有时候，我们可能需要在运行时动态加载类，利用 `BeanClassLoaderAware` 可以方便地获取到 `ClassLoader` 来实现这一需求。
 
-java
 
-```
+
+``` java
 @Component
 public class DynamicClassLoader implements BeanClassLoaderAware {
     private ClassLoader classLoader;
@@ -1075,9 +1075,9 @@ public class AppConfig {
 
 2.  检查类的可用性：在某些情况下，我们可能需要检查某个类是否在当前的类路径中可用。利用 `BeanClassLoaderAware` 可以方便地实现这一需求。
 
-java
 
-```
+
+``` java
 @Component
 public class ClassAvailabilityChecker implements BeanClassLoaderAware {
     private ClassLoader classLoader;
@@ -1110,9 +1110,9 @@ public class AppConfig {
 
 3.  加载资源文件：通过 `BeanClassLoaderAware` 获取的 `ClassLoader`，我们还可以方便地加载资源文件。
 
-java
 
-```
+
+``` java
 @Component
 public class ResourceLoader implements BeanClassLoaderAware {
     private ClassLoader classLoader;
@@ -1154,9 +1154,9 @@ BeanFactoryAware
 
 1.  动态获取其他 Bean：通过实现 `BeanFactoryAware` 接口，一个 Bean 可以在运行时动态获取其他 Bean。这在一些需要解耦的场景下非常有用。
 
-java
 
-```
+
+``` java
 @Component
 public class DynamicBeanFetcher implements BeanFactoryAware {
     private BeanFactory beanFactory;
@@ -1190,9 +1190,9 @@ public class AppConfig {
 
 2.  检查 Bean 的状态：通过 `BeanFactoryAware`，可以在运行时检查某个 Bean 是否存在或者其状态，这对一些需要动态检查 Bean 状态的场景非常有用。
 
-java
 
-```
+
+``` java
 @Component
 public class BeanStateChecker implements BeanFactoryAware {
     private BeanFactory beanFactory;
@@ -1226,9 +1226,9 @@ public class AppConfig {
 
 3.  创建复杂 Bean 的初始化逻辑：在一些复杂的业务场景中，有时需要在 Bean 初始化时执行一些复杂的逻辑，例如动态创建其他 Bean 并注入到当前 Bean 中。通过 `BeanFactoryAware` 可以实现这一点。
 
-java
 
-```
+
+``` java
 @Component
 public class ComplexBeanInitializer implements BeanFactoryAware {
     private BeanFactory beanFactory;
@@ -1290,9 +1290,9 @@ ApplicationContextAwareProcessor
 
 1.  动态获取其他 Bean：通过实现 `ApplicationContextAware` 接口，Bean 可以在运行时动态获取其他 Bean，这在一些需要解耦的场景下非常有用。
 
-java
 
-```
+
+``` java
 @Component
 public class DynamicBeanFetcher implements ApplicationContextAware {
     private ApplicationContext applicationContext;
@@ -1326,9 +1326,9 @@ public class AppConfig {
 
 2.  使用 ApplicationContext 进行事件发布：在一些场景中，Bean 可能需要发布事件。通过实现 `ApplicationContextAware` 接口，可以方便地获取 `ApplicationContext` 实例并发布事件。
 
-java
 
-```
+
+``` java
 @Component
 public class EventPublisherBean implements ApplicationContextAware, ApplicationEventPublisherAware {
     private ApplicationContext applicationContext;
@@ -1378,9 +1378,9 @@ public class AppConfig {
 
 3.  获取环境信息：通过实现 `ApplicationContextAware` 接口，Bean 可以访问 `ApplicationContext`，并从中获取环境配置信息，例如读取配置文件中的属性值。
 
-java
 
-```
+
+``` java
 @Component
 public class EnvironmentAwareBean implements ApplicationContextAware {
     private ApplicationContext applicationContext;
@@ -1448,9 +1448,9 @@ InitializingBean
 
 1.  初始化资源：可以在 Bean 初始化后自动启动一些资源，如数据库连接、文件读取等。
 
-java
 
-```
+
+``` java
 public class NormalBeanA implements InitializingBean{
     @Overrideimport org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
@@ -1479,9 +1479,9 @@ public class AppConfig {
 
 2.  设置初始值
 
-java
 
-```
+
+``` java
 @Component
 public class InitialValueSetter implements InitializingBean {
     private String initialValue;
@@ -1507,9 +1507,9 @@ public class AppConfig {
 
 3.  加载配置：可以在 Bean 初始化后加载必要的配置，如从文件或数据库中读取配置。
 
-java
 
-```
+
+``` java
 @Component
 public class ConfigLoader implements InitializingBean {
     private String configValue;
@@ -1553,9 +1553,9 @@ SmartInitializingSingleton
 
 1.  全局初始化操作：可以在所有单例 Bean 初始化后执行一些全局性的初始化操作，比如设置缓存、启动全局调度任务等。
 
-java
 
-```
+
+``` java
 @Component
 public class GlobalInitializer implements SmartInitializingSingleton {
     @Override
@@ -1594,9 +1594,9 @@ FactoryBean 与 BeanFactory 的区别
 
 1.  创建复杂对象：使用 `FactoryBean` 可以帮助我们创建那些需要复杂配置或初始化的对象。
 
-java
 
-```
+
+``` java
 class ComplexObject {
     private String name;
     private int value;
@@ -1640,9 +1640,9 @@ public class AppConfig {
 
 2.  动态切换实现：假设我们需要根据某些条件动态切换 Bean 的具体实现类，可以使用 `FactoryBean`。
 
-java
 
-```
+
+``` java
 interface Service {
     void execute();
 }
@@ -1693,9 +1693,9 @@ public class AppConfig {
 
 3.  延迟初始化：`FactoryBean` 可以用于延迟初始化某些 Bean，**只有在第一次获取时才进行实例化**。
 
-java
 
-```
+
+``` java
 class LazyObject {
     public LazyObject() {
         System.out.println("懒对象被创建");
@@ -1756,9 +1756,9 @@ CommandLineRunner和ApplicationRunner
 
 1.  初始化数据：使用 `CommandLineRunner` 可以在应用启动后初始化一些必要的数据，例如从数据库加载某些配置或插入初始数据。
 
-java
 
-```
+
+``` java
 @Component
 public class DataInitializer implements CommandLineRunner {
     @Override
@@ -1775,9 +1775,9 @@ public class DataInitializer implements CommandLineRunner {
 
 2.  启动后执行任务：使用 `CommandLineRunner` 可以在应用启动后执行一些特定的任务，比如发送一个通知或启动一些背景任务。
 
-java
 
-```
+
+``` java
 @Component
 public class TaskExecutor implements CommandLineRunner {
     @Override
@@ -1794,9 +1794,9 @@ public class TaskExecutor implements CommandLineRunner {
 
 3.  读取命令行参数：使用 `CommandLineRunner` 可以获取并处理命令行参数，这对于需要根据启动参数动态配置应用的场景非常有用。
 
-java
 
-```
+
+``` java
 @Component
 public class CommandLineArgsProcessor implements CommandLineRunner {
     @Override
@@ -1841,9 +1841,9 @@ ApplicationListener 和 ApplicationContextInitializer
 
 *   监听自定义事件：使用 `ApplicationListener` 可以监听和处理自定义事件。
 
-java
 
-```
+
+``` java
 
 class CustomEvent extends ApplicationEvent {
     private final String message;
@@ -1923,9 +1923,9 @@ DisposableBean
 
 *   释放数据库连接，清理临时文件：在应用被关闭时，释放数据库连接以确保资源被正确地回收，删除临时文件以确保磁盘空间被正确释放。
 
-java
 
-```
+
+``` java
 @Component
 public class DatabaseConnectionManager implements DisposableBean {
     @Override
